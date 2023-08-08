@@ -32,5 +32,31 @@ def list_tasks():
         click.echo(task)
         click.echo('-' * 30)
 
+@cli.command()
+@click.argument('task_id', type=int)
+def update_status(task_id):
+    """Update the status of a task."""
+    conn = create_connection()
+    create_tables(conn)
+    new_status = click.prompt('New status (incomplete/complete)', type=click.Choice(['incomplete', 'complete']))
+    if update_task_status(conn, task_id, new_status):
+        click.echo(f'Task {task_id} updated successfully.')
+    else:
+        click.echo(f'Task {task_id} not found.')
+
+@cli.command()
+@click.argument('task_id', type=int)
+def delete(task_id):
+    """Delete a task."""
+    conn = create_connection()
+    create_tables(conn)
+    
+
+    if delete_task(conn, task_id):
+        click.echo(f'Task {task_id} deleted successfully.')
+    else:
+        click.echo(f'Task {task_id} not found.')
+
+
 if __name__ == '__main__':
     cli()
